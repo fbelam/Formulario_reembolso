@@ -6,7 +6,7 @@
         *{
           margin: 0px;
           padding: 0;
-          box-sizing: boder-box;
+          box-sizing: border-box;
           font-family: Arial, sans-serif;
         }
         .campo-obrigatorio {
@@ -64,10 +64,18 @@
         <td><input type="number" name="Estacionamento" step="0.10" placeholder="0,00"></td>
         <td><input type="number" name="Outros" step="0.10" placeholder="0,00"></td>
       </tr>
+      
     </table>
 
       <input type="button" value="Enviar" class="botao" onclick="enviarFormulario()">
 
+    <h2>Anexe o arquivo</h2>
+    <form id="uploadForm">
+      <input type="file" name="myfile" id="myfile" required>
+      <br><br>
+      <input type="submit" value="Enviar">
+    </form>
+    <div id="output"></div>
 <div id="resposta"></div>
 
     <script>
@@ -80,6 +88,36 @@
           document.getElementById("resposta").innerHTML = resposta;
         }).processarFormulario(obj);
       }
+      //Quando o formulario for enviado executa esse função
+      document.getElementById('uploadForm').onsubmit = function(event) {
+        //Impede do formulario ser enviado da forma normal
+        event.preventDefault();
+        //Pega o input do arquivo 
+        var fileInput = document.getElementById('myfile');
+        //Pega o primeiro arquivo selecionado pelo usuario
+        var file = fileInput.files[0]
+        //Se nenhum arquivo foi selecionado, ele mostra uma mensagem  e interrompe
+        if (!file){
+          document.getElementById('output').innerText = 'Por favor, selecione um arquivo.';
+        return;
+        }
+        //Cria um FileReader para ler o conteudo do arquvio como dados binarios (Array Buffer)
+        var fr = new FileReader();
+        //Quando a leitura for concluida, esta função será executada
+        fr.onload = function(e){
+          const base64Data = e.target.result.split(',')[1]; // remove o cabeçalho "data:..."
+          const obj = {
+            nome: file.name,
+            tipo: file.type,
+            conteudo: base64Data
+          };
+
+          google.script.run.withSuccessHandler(function(response) {
+            document.getElementById('output').innerText = response;
+          }).uploadBase64File(obj);
+        };
+        fr.readAsDataURL(file);
+      };
     </script>
   </body>
 </html>
