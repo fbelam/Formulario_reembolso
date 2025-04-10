@@ -64,13 +64,25 @@
         <td><input type="number" name="Estacionamento" step="0.10" placeholder="0,00"></td>
         <td><input type="number" name="Outros" step="0.10" placeholder="0,00"></td>
       </tr>
-
     </table>
-
-      <input type="button" value="Enviar" class="botao" onclick="enviarFormulario()">
+      <tr>
+        <th>Total</th>
+        <th class="TotalMercado">0,00</th>
+        <th class="totalCombustivel">0,00</th>
+        <th class="totalTaxi">0,00</th>
+        <th class="totalEstacionamento">0,00</th>
+        <th class="outros">0,00</th>
+      </tr>
+      <tr>
+        <th colspans="6" style="text-align: right;">Soma geral: <span id="somaGeral">0,00</span> </th>
+      </tr>
+      <button type="button" onclick="adicionarLinha()">+ Adicionar Linha</button>
+      
+    <!-- <input type="button" value="Enviar" class="botao" onclick="enviarFormulario()"> -->
 
     <h2>Anexe o arquivo</h2>
     <form id="uploadForm">
+
       <input type="file" name="myfile" id="myfile" required>
       <br><br>
       <input type="submit" value="Enviar">
@@ -88,6 +100,7 @@
           document.getElementById("resposta").innerHTML = resposta;
         }).processarFormulario(obj);
       }
+
       //Quando o formulario for enviado executa esse função
       document.getElementById('uploadForm').onsubmit = function(event) {
         //Impede do formulario ser enviado da forma normal
@@ -121,6 +134,23 @@
         };
         fr.readAsDataURL(file);
       };
+
+      function adicionarLinha() {
+        const tabela = document.getElementById("tabela");
+        const novaLinha = tabela.insertRow();
+
+        const categorias = ["Alimentação", "Mercado", "Combustivel", "Taxi", "Estacionamento", "Outros"];
+
+        categorias.forEach(nome => {
+          const celula = novaLinha.insertCell();
+          const input = document.createElement("input");
+          input.type = "number";
+          input.name = nome;
+          input.step = "0.10";
+          input.placeholder = "0,00";
+          celula.appendChild(input);
+        });
+      }
     </script>
   </body>
 </html>
