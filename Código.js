@@ -2,30 +2,24 @@ function doGet() {
   return HtmlService.createHtmlOutputFromFile('Formulario');
 }
 
+// Processa o formulário de dados simples (nome, datas, etc.)
 function processarFormulario(dados) {
-  Logger.log(dados);  // Apenas para demonstração
+  Logger.log(dados);  // Para visualização no log do Apps Script
   return `Obrigado, ${dados.cliente}! Sua mensagem foi recebida.`;
 }
 
-function upload_file(form) {
-  try{
+// Recebe arquivo como Base64 e salva no Drive
+function uploadBase64File(dados) {
+  try {
+    const folderId = "1kXOYIcm0rRmfhabyye0AYsrNEHehE2gP"; // sua pasta
+    const folder = DriveApp.getFolderById(folderId);
 
-    //Obter o arquivo que foi enviado no formulario
-    var fileBlob = form.myfile;
-    
-    //Pega o caminho da pasta do drive
-    var folderId = '1kXOYIcm0rRmfhabyye0AYsrNEHehE2gP';
-    
-    //Acessar a pasta usando o ID
-    var folder = DriveApp.getFolderById(folderId);
+    const decoded = Utilities.base64Decode(dados.conteudo);
+    const blob = Utilities.newBlob(decoded, dados.tipo, dados.nome);
+    const file = folder.createFile(blob);
 
-    //Cria um novo arquivo dentro da pasta, usando o arquivo que foi enviado no formulario
-    var file = folder.createFile(fileBlob);
-
-    return 'Arquivo enviado com sucesso' + file.getName();
-  } catch (error) {
-    //Se der erro
-    return 'Erro ao enviar o arquivo' + error.toString();
-    
+    return "Arquivo enviado com sucesso: " + file.getName();
+  } catch (e) {
+    return "Erro ao enviar o arquivo: " + e.toString();
   }
 }

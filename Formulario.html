@@ -6,7 +6,7 @@
         *{
           margin: 0px;
           padding: 0;
-          box-sizing: boder-box;
+          box-sizing: border-box;
           font-family: Arial, sans-serif;
         }
         .campo-obrigatorio {
@@ -64,6 +64,7 @@
         <td><input type="number" name="Estacionamento" step="0.10" placeholder="0,00"></td>
         <td><input type="number" name="Outros" step="0.10" placeholder="0,00"></td>
       </tr>
+      
     </table>
 
       <input type="button" value="Enviar" class="botao" onclick="enviarFormulario()">
@@ -104,23 +105,19 @@
         var fr = new FileReader();
         //Quando a leitura for concluida, esta função será executada
         fr.onload = function(e){
-          //Converter os dados em um "blob" compativel com o app script
-          var obj = {
-            myfile: Utilities.newBlob([...new Uint8Array(e.target.result)], file.type, file.name)
+          const base64Data = e.target.result.split(',')[1]; // remove o cabeçalho "data:..."
+          const obj = {
+            nome: file.name,
+            tipo: file.type,
+            conteudo: base64Data
           };
 
-          //Envia o arquivo para a função uploadFile() do lado do App Script
-          //withSuccessHandler define o que fazer quando a reposta for definida
           google.script.run.withSuccessHandler(function(response) {
-            //Mostra a mensagem de sucesso ou erro retornada pelo App Script 
             document.getElementById('output').innerText = response;
-            }).uploadFile(obj);
+          }).uploadBase64File(obj);
         };
-          
-        //Inicia a leitura do arquivo como ArrayBuffer (binario)
-        fr.readAsArrayBuffer(file)
-      }
-
+        fr.readAsDataURL(file);
+      };
     </script>
   </body>
 </html>
