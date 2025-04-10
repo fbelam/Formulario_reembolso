@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+      <style>
+        *{
+          margin: 0px;
+          padding: 0;
+          box-sizing: boder-box;
+          font-family: Arial, sans-serif;
+        }
+        .campo-obrigatorio {
+          padding: 5px;
+          width: 20%;
+          margin: 10px;
+
+        }
+        table, th, td {
+          border: 1px solid black;
+          border-collapse: collapse;
+          padding: 5px;
+
+        }
+        .botao{
+          width: 30%;
+          box-sizing: boder-box;
+          margin-top: 3%;
+        }
+      </style>
+  </head>
+  <body>
+    <div>
+    <h2>Formulário de Reembolso</h2>
+    
+      <form id="meuFormulario" class="campo-obrigatorio"> <!-- Corrigido -->
+        <label>Cliente:</label><br>
+        <input type="text" name="cliente" ><br><br>
+
+        <label>Técnico:</label><br>
+        <input type="text" name="tecnico"><br><br>
+
+        <label>Data Saida:</label><br>
+        <input type="date" name="data"><br><br> 
+
+        <label>Data Retorno:</label><br>
+        <input type="date" name="data"><br><br> 
+      </form>
+
+    <table id="tabela"> 
+      <tr>
+        <th>Alimentação</th>
+        <th>Mercado</th>
+        <th>Combustivel</th>
+        <th>Taxi</th>
+        <th>Estacionamento</th>
+        <th>Outros</th>
+      </tr>
+
+      <tr>
+        <td><input type="number" name="Alimentação" step="0.10" placeholder="0,00"></td>
+        <td><input type="number" name="Mercado" step="0.10" placeholder="0,00"></td>
+        <td><input type="number" name="Combustivel" step="0.10" placeholder="0,00"></td>
+        <td><input type="number" name="Taxi" step="0.10" placeholder="0,00"></td>
+        <td><input type="number" name="Estacionamento" step="0.10" placeholder="0,00"></td>
+        <td><input type="number" name="Outros" step="0.10" placeholder="0,00"></td>
+      </tr>
+    </table>
+
+      <input type="button" value="Enviar" class="botao" onclick="enviarFormulario()">
+
+<div id="resposta"></div>
+
+    <script>
+      function enviarFormulario() {
+        const dados = new FormData(document.getElementById("meuFormulario")); // Corrigido
+        const obj = {};
+        dados.forEach((valor, chave) => obj[chave] = valor);
+
+        google.script.run.withSuccessHandler(function(resposta) {
+          document.getElementById("resposta").innerHTML = resposta;
+        }).processarFormulario(obj);
+      }
+    </script>
+  </body>
+</html>
