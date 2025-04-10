@@ -68,6 +68,13 @@
 
       <input type="button" value="Enviar" class="botao" onclick="enviarFormulario()">
 
+    <h2>Anexe o arquivo</h2>
+    <form id="uploadForm">
+      <input type="file" name="myfile" id="myfile" required>
+      <br><br>
+      <input type="submit" value="Enviar">
+    </form>
+    <div id="output"></div>
 <div id="resposta"></div>
 
     <script>
@@ -80,6 +87,40 @@
           document.getElementById("resposta").innerHTML = resposta;
         }).processarFormulario(obj);
       }
+      //Quando o formulario for enviado executa esse função
+      document.getElementById('uploadForm').onsubmit = function(event) {
+        //Impede do formulario ser enviado da forma normal
+        event.preventDefault();
+        //Pega o input do arquivo 
+        var fileInput = document.getElementById('myfile');
+        //Pega o primeiro arquivo selecionado pelo usuario
+        var file = fileInput.files[0]
+        //Se nenhum arquivo foi selecionado, ele mostra uma mensagem  e interrompe
+        if (!file){
+          document.getElementById('output').innerText = 'Por favor, selecione um arquivo.';
+        return;
+        }
+        //Cria um FileReader para ler o conteudo do arquvio como dados binarios (Array Buffer)
+        var fr = new FileReader();
+        //Quando a leitura for concluida, esta função será executada
+        fr.onload = function(e){
+          //Converter os dados em um "blob" compativel com o app script
+          var obj = {
+            myfile: Utilities.newBlob([...new Uint8Array(e.target.result)], file.type, file.name)
+          };
+
+          //Envia o arquivo para a função uploadFile() do lado do App Script
+          //withSuccessHandler define o que fazer quando a reposta for definida
+          google.script.run.withSuccessHandler(function(response) {
+            //Mostra a mensagem de sucesso ou erro retornada pelo App Script 
+            document.getElementById('output').innerText = response;
+            }).uploadFile(obj);
+        };
+          
+        //Inicia a leitura do arquivo como ArrayBuffer (binario)
+        fr.readAsArrayBuffer(file)
+      }
+
     </script>
   </body>
 </html>
