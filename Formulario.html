@@ -4,16 +4,23 @@
     <base target="_top">
       <style>
         *{
-          margin: 0px;
+          margin: 10px;
           padding: 0;
           box-sizing: border-box;
           font-family: Arial, sans-serif;
         }
+        h2{
+          display: flex;
+          justify-content: center; /* centraliza na horizontal */
+          align-items: flex-start; /* alinha no topo verticalmente */
+          margin-top: 30px; 
+          margin-bottom: 30px;
+        }
         .campo-obrigatorio {
           padding: 5px;
-          width: 20%;
+          width: 500px;
           margin: 10px;
-
+          display: flex;
         }
         table, th, td {
           border: 1px solid black;
@@ -26,26 +33,31 @@
           box-sizing: boder-box;
           margin-top: 3%;
         }
+        .first {
+          margin: 10px;
+        }
       </style>
   </head>
   <body>
-    <div>
     <h2>Formulário de Reembolso</h2>
     
+    <div  class="first">
+
       <form id="meuFormulario" class="campo-obrigatorio"> <!-- Corrigido -->
         <label>Cliente:</label><br>
         <input type="text" name="cliente" id="nomeArquivo"><br><br>
 
         <label>Técnico:</label><br>
         <input type="text" name="tecnico"><br><br>
-
+      </form>  
+      <form id="meuFormulario2" class="campo-obrigatorio"> <!-- Corrigido -->
         <label>Data Saida:</label><br>
         <input type="date" name="data"><br><br> 
 
         <label>Data Retorno:</label><br>
         <input type="date" name="data"><br><br> 
       </form>
-
+    </div>
     <table id="tabela"> 
       <tr>
         <th>Alimentação</th>
