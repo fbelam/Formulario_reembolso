@@ -34,7 +34,7 @@
     
       <form id="meuFormulario" class="campo-obrigatorio"> <!-- Corrigido -->
         <label>Cliente:</label><br>
-        <input type="text" name="cliente" ><br><br>
+        <input type="text" name="cliente" id="nomeArquivo"><br><br>
 
         <label>Técnico:</label><br>
         <input type="text" name="tecnico"><br><br>
@@ -64,13 +64,20 @@
         <td><input type="number" name="Estacionamento" step="0.10" placeholder="0,00"></td>
         <td><input type="number" name="Outros" step="0.10" placeholder="0,00"></td>
       </tr>
-      
     </table>
+    
+      <button type="button" onclick="adicionarLinha()">+ Adicionar Linha</button>
+      <br><br> 
+      <tr>
+        <th colspans="6" style="text-align: right;">Soma geral: <span id="somaGeral">0,00</span> </th>
+      </tr>
+      <br><br> 
 
-      <input type="button" value="Enviar" class="botao" onclick="enviarFormulario()">
+    <!-- <input type="button" value="Enviar" class="botao" onclick="enviarFormulario()"> -->
 
     <h2>Anexe o arquivo</h2>
     <form id="uploadForm">
+
       <input type="file" name="myfile" id="myfile" required>
       <br><br>
       <input type="submit" value="Enviar">
@@ -80,14 +87,21 @@
 
     <script>
       function enviarFormulario() {
+        
+        // Cria um objeto FormData com os campos do formulário identificado por ID "meuFormulario"
         const dados = new FormData(document.getElementById("meuFormulario")); // Corrigido
+        
+        // Converte o FormData em um objeto JS comum (chave: valor)
         const obj = {};
         dados.forEach((valor, chave) => obj[chave] = valor);
-
+        
+          // Envia o objeto para o Apps Script usando google.script.run
+            // A função Apps Script chamada é "processarFormulario"
         google.script.run.withSuccessHandler(function(resposta) {
           document.getElementById("resposta").innerHTML = resposta;
         }).processarFormulario(obj);
       }
+
       //Quando o formulario for enviado executa esse função
       document.getElementById('uploadForm').onsubmit = function(event) {
         //Impede do formulario ser enviado da forma normal
@@ -103,21 +117,70 @@
         }
         //Cria um FileReader para ler o conteudo do arquvio como dados binarios (Array Buffer)
         var fr = new FileReader();
+        
+       // Verifica se o usuário preencheu um nome personalizado  
+        var nomePersonalizado = document.getElementById('nomeArquivo').value.trim();
+        const nomeFinal = nomePersonalizado !== "" ? nomePersonalizado : file.name;
+        
         //Quando a leitura for concluida, esta função será executada
         fr.onload = function(e){
           const base64Data = e.target.result.split(',')[1]; // remove o cabeçalho "data:..."
           const obj = {
-            nome: file.name,
+            nome: nomeFinal,
             tipo: file.type,
             conteudo: base64Data
           };
-
+          
+          // Envia para a função "uploadBase64File" no Apps Script
           google.script.run.withSuccessHandler(function(response) {
             document.getElementById('output').innerText = response;
           }).uploadBase64File(obj);
         };
         fr.readAsDataURL(file);
       };
+
+      function adicionarLinha() {
+        const tabela = document.getElementById("tabela");
+        const novaLinha = tabela.insertRow();
+
+        const categorias = ["Alimentação", "Mercado", "Combustivel", "Taxi", "Estacionamento", "Outros"];
+
+        // Para cada categoria, cria uma célula com um campo numérico
+        categorias.forEach(nome => {
+          const celula = novaLinha.insertCell();
+          const input = document.createElement("input");
+          input.type = "number";
+          input.name = nome;
+          input.step = "0.10";
+          input.placeholder = "0,00";
+          celula.appendChild(input);
+        });
+        ativarAutoSoma(); // Chama a função na hora do carregamento do script
+
+      }
+      function somarColunas(){
+        const inputs = document.querySelectorAll('#tabela input[type="number"]');
+        let soma = 0;
+        
+        // Percorre todos os inputs e soma os valores (considera vírgula como ponto)
+        inputs.forEach(input => {
+          const valor = parseFloat(input.value.replace(",", ".")) || 0;
+          soma += valor;
+        });
+
+        // Exibe o total na div com id "somaGeral"
+        document.getElementById("somaGeral").innerText = soma.toFixed(2).replace(".", ",");
+      }
+
+      function ativarAutoSoma() {
+        const inputs = document.querySelectorAll('#tabela input[type="number"]');
+        inputs.forEach(input => {
+          input.addEventListener('input', somarColunas); // chama somarColunas quando digito
+        });
+      }
+      ativarAutoSoma(); // Chama a função na hora do carregamento do script
+
+      window.onload = ativarAutoSoma; // E também quando a página carregar
     </script>
   </body>
 </html>
