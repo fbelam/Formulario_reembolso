@@ -155,6 +155,8 @@
           input.placeholder = "0,00";
           celula.appendChild(input);
         });
+        ativarAutoSoma(); // Chama a função na hora do carregamento do script
+
       }
       function somarColunas(){
         const inputs = document.querySelectorAll('#tabela input[type="number"]');
