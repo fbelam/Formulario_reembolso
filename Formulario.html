@@ -114,13 +114,12 @@
 
         <label>Técnico:</label><br>
         <input type="text" name="tecnico"><br><br>
-      </form>
-      <form id="meuFormulario2" class="campo-obrigatorio"> <!-- Corrigido -->
+      
         <label>Data Saida:</label><br>
-        <input type="date" name="data"><br><br>
+        <input type="date" name="data_saida"><br><br>
 
         <label>Data Retorno:</label><br>
-        <input type="date" name="data"><br><br>
+        <input type="date" name="data_retorno"><br><br>
       </form>
     </div>
     <table id="tabela">
@@ -182,7 +181,8 @@
       });
       // Envia o objeto para o Apps Script usando google.script.run
       // A função Apps Script chamada é "processarFormulario"
-      google.script.run.withSuccessHandler(function (resposta) {
+      google.script.run.withSuccessHandler
+      (function(resposta) {
         document.getElementById("resposta").innerHTML = resposta;
       }).processarFormulario(obj);
     }
