@@ -1,47 +1,112 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <base target="_top">
-      <style>
-        *{
-          margin: 10px;
-          padding: 0;
-          box-sizing: border-box;
-          font-family: Arial, sans-serif;
-        }
-        h2{
-          display: flex;
-          justify-content: center; /* centraliza na horizontal */
-          align-items: flex-start; /* alinha no topo verticalmente */
-          margin-top: 30px; 
-          margin-bottom: 30px;
-        }
-        .campo-obrigatorio {
-          padding: 5px;
-          width: 500px;
-          margin: 10px;
-          display: flex;
-        }
-        table, th, td {
-          border: 1px solid black;
-          border-collapse: collapse;
-          padding: 5px;
 
-        }
-        .botao{
-          width: 30%;
-          box-sizing: boder-box;
-          margin-top: 3%;
-        }
-        .first {
-          margin: 10px;
-        }
-      </style>
-  </head>
-  <body>
+<head>
+  <base target="_top">
+  <style>
+    * {
+      margin: 10px;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    h2 {
+      display: flex;
+      justify-content: center;
+      /* centraliza na horizontal */
+      align-items: flex-start;
+      /* alinha no topo verticalmente */
+      margin-top: 30px;
+      margin-bottom: 30px;
+    }
+
+    .campo-obrigatorio {
+      padding: 5px;
+      width: 500px;
+      margin: 10px;
+      display: flex;
+    }
+
+    body {
+      background-color: #2E8B57;
+    }
+
+    .forms {
+      border: 1px solid rgb(0, 161, 41);
+      border-collapse: collapse;
+      padding: 30px;
+      background-color: rgb(255, 255, 255);
+    }
+
+    table,
+    th,
+    td {
+      border: 1px solid black;
+      border-collapse: collapse;
+      padding: 5px;
+      border-radius: 30%;
+    }
+
+    .botao {
+      width: 30%;
+      box-sizing: boder-box;
+      margin-top: 3%;
+    }
+
+    .first {
+      margin: 10px;
+    }
+
+    .btn-three {
+      color: #FFF;
+      transition: all 0.5s;
+      position: relative;
+    }
+
+    .btn-three::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      background-color: rgba(255, 255, 255, 0.1);
+      transition: all 0.3s;
+    }
+
+    .btn-three:hover::before {
+      opacity: 0;
+      transform: scale(0.5, 0.5);
+    }
+
+    .btn-three::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      opacity: 0;
+      transition: all 0.3s;
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      transform: scale(1.2, 1.2);
+    }
+
+    .btn-three:hover::after {
+      opacity: 1;
+      transform: scale(1, 1);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="forms">
     <h2>Formulário de Reembolso</h2>
-    
-    <div  class="first">
+
+    <div class="first">
 
       <form id="meuFormulario" class="campo-obrigatorio"> <!-- Corrigido -->
         <label>Cliente:</label><br>
@@ -49,16 +114,16 @@
 
         <label>Técnico:</label><br>
         <input type="text" name="tecnico"><br><br>
-      </form>  
+      </form>
       <form id="meuFormulario2" class="campo-obrigatorio"> <!-- Corrigido -->
         <label>Data Saida:</label><br>
-        <input type="date" name="data"><br><br> 
+        <input type="date" name="data"><br><br>
 
         <label>Data Retorno:</label><br>
-        <input type="date" name="data"><br><br> 
+        <input type="date" name="data"><br><br>
       </form>
     </div>
-    <table id="tabela"> 
+    <table id="tabela">
       <tr>
         <th>Alimentação</th>
         <th>Mercado</th>
@@ -77,17 +142,17 @@
         <td><input type="number" name="Outros" step="0.10" placeholder="0,00"></td>
       </tr>
     </table>
-    
-      <button type="button" onclick="adicionarLinha()">+ Adicionar Linha</button>
-      <br><br> 
-      <tr>
-        <th colspans="6" style="text-align: right;">Soma geral: <span id="somaGeral">0,00</span> </th>
-      </tr>
-      <br><br> 
+
+    <button type="button" onclick="adicionarLinha()">+ Adicionar Linha</button>
+    <br><br>
+    <tr>
+      <th colspans="6" style="text-align: right;">Soma geral: <span id="somaGeral">0,00</span> </th>
+    </tr>
+    <br><br>
 
     <!-- <input type="button" value="Enviar" class="botao" onclick="enviarFormulario()"> -->
 
-    <h2>Anexe o arquivo</h2>
+    <h2>Upload Recibos</h2>
     <form id="uploadForm">
 
       <input type="file" name="myfile" id="myfile" required>
@@ -95,104 +160,105 @@
       <input type="submit" value="Enviar">
     </form>
     <div id="output"></div>
-<div id="resposta"></div>
+    <div id="resposta"></div>
+  </div>
+  <script>
+    function enviarFormulario() {
 
-    <script>
-      function enviarFormulario() {
-        
-        // Cria um objeto FormData com os campos do formulário identificado por ID "meuFormulario"
-        const dados = new FormData(document.getElementById("meuFormulario")); // Corrigido
-        
-        // Converte o FormData em um objeto JS comum (chave: valor)
-        const obj = {};
-        dados.forEach((valor, chave) => obj[chave] = valor);
-        
-          // Envia o objeto para o Apps Script usando google.script.run
-            // A função Apps Script chamada é "processarFormulario"
-        google.script.run.withSuccessHandler(function(resposta) {
-          document.getElementById("resposta").innerHTML = resposta;
-        }).processarFormulario(obj);
-      }
+      // Cria um objeto FormData com os campos do formulário identificado por ID "meuFormulario"
+      const dados = new FormData(document.getElementById("meuFormulario")); // Corrigido
 
-      //Quando o formulario for enviado executa esse função
-      document.getElementById('uploadForm').onsubmit = function(event) {
-        //Impede do formulario ser enviado da forma normal
-        event.preventDefault();
-        //Pega o input do arquivo 
-        var fileInput = document.getElementById('myfile');
-        //Pega o primeiro arquivo selecionado pelo usuario
-        var file = fileInput.files[0]
-        //Se nenhum arquivo foi selecionado, ele mostra uma mensagem  e interrompe
-        if (!file){
-          document.getElementById('output').innerText = 'Por favor, selecione um arquivo.';
+      // Converte o FormData em um objeto JS comum (chave: valor)
+      const obj = {};
+      dados.forEach((valor, chave) => obj[chave] = valor);
+
+      // Envia o objeto para o Apps Script usando google.script.run
+      // A função Apps Script chamada é "processarFormulario"
+      google.script.run.withSuccessHandler(function (resposta) {
+        document.getElementById("resposta").innerHTML = resposta;
+      }).processarFormulario(obj);
+    }
+
+    //Quando o formulario for enviado executa esse função
+    document.getElementById('uploadForm').onsubmit = function (event) {
+      //Impede do formulario ser enviado da forma normal
+      event.preventDefault();
+      //Pega o input do arquivo 
+      var fileInput = document.getElementById('myfile');
+      //Pega o primeiro arquivo selecionado pelo usuario
+      var file = fileInput.files[0]
+      //Se nenhum arquivo foi selecionado, ele mostra uma mensagem  e interrompe
+      if (!file) {
+        document.getElementById('output').innerText = 'Por favor, selecione um arquivo.';
         return;
-        }
-        //Cria um FileReader para ler o conteudo do arquvio como dados binarios (Array Buffer)
-        var fr = new FileReader();
-        
-       // Verifica se o usuário preencheu um nome personalizado  
-        var nomePersonalizado = document.getElementById('nomeArquivo').value.trim();
-        const nomeFinal = nomePersonalizado !== "" ? nomePersonalizado : file.name;
-        
-        //Quando a leitura for concluida, esta função será executada
-        fr.onload = function(e){
-          const base64Data = e.target.result.split(',')[1]; // remove o cabeçalho "data:..."
-          const obj = {
-            nome: nomeFinal,
-            tipo: file.type,
-            conteudo: base64Data
-          };
-          
-          // Envia para a função "uploadBase64File" no Apps Script
-          google.script.run.withSuccessHandler(function(response) {
-            document.getElementById('output').innerText = response;
-          }).uploadBase64File(obj);
+      }
+      //Cria um FileReader para ler o conteudo do arquvio como dados binarios (Array Buffer)
+      var fr = new FileReader();
+
+      // Verifica se o usuário preencheu um nome personalizado  
+      var nomePersonalizado = document.getElementById('nomeArquivo').value.trim();
+      const nomeFinal = nomePersonalizado !== "" ? nomePersonalizado : file.name;
+
+      //Quando a leitura for concluida, esta função será executada
+      fr.onload = function (e) {
+        const base64Data = e.target.result.split(',')[1]; // remove o cabeçalho "data:..."
+        const obj = {
+          nome: nomeFinal,
+          tipo: file.type,
+          conteudo: base64Data
         };
-        fr.readAsDataURL(file);
+
+        // Envia para a função "uploadBase64File" no Apps Script
+        google.script.run.withSuccessHandler(function (response) {
+          document.getElementById('output').innerText = response;
+        }).uploadBase64File(obj);
       };
+      fr.readAsDataURL(file);
+    };
 
-      function adicionarLinha() {
-        const tabela = document.getElementById("tabela");
-        const novaLinha = tabela.insertRow();
+    function adicionarLinha() {
+      const tabela = document.getElementById("tabela");
+      const novaLinha = tabela.insertRow();
 
-        const categorias = ["Alimentação", "Mercado", "Combustivel", "Taxi", "Estacionamento", "Outros"];
+      const categorias = ["Alimentação", "Mercado", "Combustivel", "Taxi", "Estacionamento", "Outros"];
 
-        // Para cada categoria, cria uma célula com um campo numérico
-        categorias.forEach(nome => {
-          const celula = novaLinha.insertCell();
-          const input = document.createElement("input");
-          input.type = "number";
-          input.name = nome;
-          input.step = "0.10";
-          input.placeholder = "0,00";
-          celula.appendChild(input);
-        });
-        ativarAutoSoma(); // Chama a função na hora do carregamento do script
-
-      }
-      function somarColunas(){
-        const inputs = document.querySelectorAll('#tabela input[type="number"]');
-        let soma = 0;
-        
-        // Percorre todos os inputs e soma os valores (considera vírgula como ponto)
-        inputs.forEach(input => {
-          const valor = parseFloat(input.value.replace(",", ".")) || 0;
-          soma += valor;
-        });
-
-        // Exibe o total na div com id "somaGeral"
-        document.getElementById("somaGeral").innerText = soma.toFixed(2).replace(".", ",");
-      }
-
-      function ativarAutoSoma() {
-        const inputs = document.querySelectorAll('#tabela input[type="number"]');
-        inputs.forEach(input => {
-          input.addEventListener('input', somarColunas); // chama somarColunas quando digito
-        });
-      }
+      // Para cada categoria, cria uma célula com um campo numérico
+      categorias.forEach(nome => {
+        const celula = novaLinha.insertCell();
+        const input = document.createElement("input");
+        input.type = "number";
+        input.name = nome;
+        input.step = "0.10";
+        input.placeholder = "0,00";
+        celula.appendChild(input);
+      });
       ativarAutoSoma(); // Chama a função na hora do carregamento do script
 
-      window.onload = ativarAutoSoma; // E também quando a página carregar
-    </script>
-  </body>
+    }
+    function somarColunas() {
+      const inputs = document.querySelectorAll('#tabela input[type="number"]');
+      let soma = 0;
+
+      // Percorre todos os inputs e soma os valores (considera vírgula como ponto)
+      inputs.forEach(input => {
+        const valor = parseFloat(input.value.replace(",", ".")) || 0;
+        soma += valor;
+      });
+
+      // Exibe o total na div com id "somaGeral"
+      document.getElementById("somaGeral").innerText = soma.toFixed(2).replace(".", ",");
+    }
+
+    function ativarAutoSoma() {
+      const inputs = document.querySelectorAll('#tabela input[type="number"]');
+      inputs.forEach(input => {
+        input.addEventListener('input', somarColunas); // chama somarColunas quando digito
+      });
+    }
+    ativarAutoSoma(); // Chama a função na hora do carregamento do script
+
+    window.onload = ativarAutoSoma; // E também quando a página carregar
+  </script>
+</body>
+
 </html>
