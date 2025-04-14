@@ -172,6 +172,14 @@
       const obj = {};
       dados.forEach((valor, chave) => obj[chave] = valor);
 
+      const inputs = document.querySelectorAll('#tabela input[type="number"]');
+      let soma = 0;
+
+      inputs.forEach(input => {
+        const valor = parseFloat(input.value.replace(",",".")) || 0;
+        soma += valor;
+        obj[input.name] = valor.toFixed(2); //Adiciona as despesas individualmente no obj
+      });
       // Envia o objeto para o Apps Script usando google.script.run
       // A função Apps Script chamada é "processarFormulario"
       google.script.run.withSuccessHandler(function (resposta) {
@@ -232,7 +240,7 @@
         input.placeholder = "0,00";
         celula.appendChild(input);
       });
-      ativarAutoSoma(); // Chama a função na hora do carregamento do script
+      ativarAutoSoma(); // Chama a função quando eu clico em add linha
 
     }
     function somarColunas() {
